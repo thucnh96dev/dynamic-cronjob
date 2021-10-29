@@ -2,7 +2,9 @@ package com.thucnh.cronjob.service.quartz;
 
 import com.cronutils.model.CronType;
 import com.thucnh.cronjob.common.JobHelper;
+import com.thucnh.cronjob.common.TimeZoneHelper;
 import com.thucnh.cronjob.domain.JobCron;
+import com.thucnh.cronjob.payload.job.JobIto;
 import com.thucnh.cronjob.payload.job.ScheduleJob;
 import com.thucnh.cronjob.service.base.BaseService;
 import lombok.extern.log4j.Log4j2;
@@ -11,6 +13,8 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -40,25 +44,34 @@ public class QuartzJobService extends BaseService<JobCron> {
         return  data;
     }
 
-    public Map<String, Object> addJob(String className, String cronExpression) throws Exception{
+    public Map<String, Object> addJob(JobIto jobIto) throws Exception{
+        String className = jobIto.getClassName();
+        String cronExpression = jobIto.getCronExpression();
         Map<String, Object> data = new HashMap<>();
         Class clazz = Class.forName(className);
         JobDetail JobDetail = JobBuilder.newJob(clazz).withIdentity(_jobPrefix + className, Scheduler.DEFAULT_GROUP).build();
-
         JobKey jobKey = JobDetail.getKey();
         boolean isExist = scheduler.checkExists(jobKey);
         if (isExist){
             data.put("isExist",isExist);
-            //data.put("JobDetail",JobDetail);
             return  data;
         }
         CronTriggerImpl cronTrigger = new CronTriggerImpl();
         cronTrigger.setName(_jobPrefix + className);
         cronTrigger.setCronExpression(cronExpression);
-        cronTrigger.setStartTime(new Date());
+        cronTrigger.setDescription(jobIto.getDescription());
+        TimeZone  timeZone;
+        try {
+            timeZone = TimeZoneHelper.fromTimeZone(jobIto.getTimeZone());
+        }catch (Exception e){
+            timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        }
+        cronTrigger.setTimeZone(timeZone);
+        if (jobIto.isRunNow()){
+            cronTrigger.setStartTime(new Date());
+        }
         Date startAt = scheduler.scheduleJob(JobDetail, cronTrigger);
         data.put("startAt",startAt);
-        //data.put("JobDetail",JobDetail);
         data.put("jobDes", JobHelper.getTextCron(cronExpression, CronType.QUARTZ,JobHelper.VIETNAM));
         return data;
     }

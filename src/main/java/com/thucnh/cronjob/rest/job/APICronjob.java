@@ -55,7 +55,7 @@ public class APICronjob extends AbstractAPI {
 
     @PostMapping("")
     public ResponseEntity<Object> addJob(@RequestBody JobIto jobIto) throws Exception{
-        Map<String, Object> data = quartzJobService.addJob(jobIto.getClassName(),jobIto.getCronExpression());
+        Map<String, Object> data = quartzJobService.addJob(jobIto);
         return toResponse(data);
     }
 

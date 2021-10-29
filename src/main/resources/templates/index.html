@@ -103,6 +103,13 @@
               </select>
             </div>
             <div class="input-group">
+              <span class="input-group-addon">Job Status</span>
+              <select id="edit_timezone"  name="timezone" class="form-control">
+                <option th:each="timeZone : ${timeZones}" th:value="${timeZone.key}" th:text="${timeZone.key + ' ' + timeZone.value }">
+                </option>
+              </select>
+            </div>
+            <div class="input-group">
               <span class="input-group-addon">Job Description</span>
               <input type="text" alias="no-edit" name="desc" class="form-control" id="edit_desc" />
             </div>

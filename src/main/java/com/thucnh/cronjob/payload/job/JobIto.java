@@ -13,4 +13,7 @@ import lombok.NoArgsConstructor;
 public class JobIto {
     private String className;
     private String cronExpression;
+    private String description;
+    private String timeZone;
+    private boolean isRunNow = false;
 }
