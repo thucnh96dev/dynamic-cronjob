@@ -6,10 +6,11 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.parser.CronParser;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author : thucnh
@@ -60,7 +61,30 @@ public class JobHelper {
         return "";
     }
 
-
+    public static Set<String> getListClassCronFromSource(String packageName){
+        try {
+            //packageName = "com.thucnh.cronjob.job";
+            InputStream stream = ClassLoader.getSystemClassLoader()
+                    .getResourceAsStream(packageName.replaceAll("[.]", "/"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            Set<String> classes  = reader.lines()
+                    .filter(line -> line.endsWith(".class"))
+                    .map(line -> getClass(line, packageName).getName())
+                    .collect(Collectors.toSet());
+            return  classes;
+        }catch (Exception e){
+        }
+        return new HashSet<>();
+    }
+    public static Class getClass(String className, String packageName) {
+        try {
+            return Class.forName(packageName + "."
+                    + className.substring(0, className.lastIndexOf('.')));
+        } catch (ClassNotFoundException e) {
+            // handle the exception
+        }
+        return null;
+    }
     public static Locale VIETNAM = new Locale("vi", "VN"), DEFAULT = Locale.getDefault();
 
 }

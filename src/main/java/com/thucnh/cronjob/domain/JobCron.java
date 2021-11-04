@@ -22,6 +22,7 @@ public class JobCron {
     private Long job_id;
     private String job_name;
     private String job_group;
+    private String job_desccription;
     private String job_class_name;
     private String trigger_name;
     private String trigger_group;

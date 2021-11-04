@@ -2,6 +2,7 @@ package com.thucnh.cronjob.service.base;
 
 import com.thucnh.cronjob.dao.base.BaseDao;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class TopBaseService<E,D extends BaseDao> {
 
-    @Setter
+    @Autowired
     protected D dao;
 
     /**

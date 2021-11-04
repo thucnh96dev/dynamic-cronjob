@@ -16,9 +16,9 @@ import java.util.Date;
 public class LogManager extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        log.info("LogManager startAt: "+ new Date());
-        log.info(this.getClass().getPackage().getName().concat(".").concat(this.getClass().getName()));
-        log.info("LogManager success startAt: "+ new Date());
+//        log.info("LogManager startAt: "+ new Date());
+//        log.info(this.getClass().getPackage().getName().concat(".").concat(this.getClass().getName()));
+//        log.info("LogManager success startAt: "+ new Date());
 
     }
 }
